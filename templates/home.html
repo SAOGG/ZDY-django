@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主界面</title>
+</head>
+<body>
+{% if messages %}{% for m in messages %}<p>{{ m }}</p>{% endfor %}{% endif %}
+  <h1>主页</h1>
+  {% if user.is_authenticated %}
+    <p>欢迎，{{ user.username }} ({{ user.email }})</p>
+    <a href="{% url 'logout' %}">退出</a>
+  {% else %}
+    <a href="{% url 'login' %}">登录</a> | <a href="{% url 'register' %}">注册</a>
+  {% endif %}
+</body>
+</html>

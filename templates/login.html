@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<body>
+{% if messages %}{% for m in messages %}<p>{{ m }}</p>{% endfor %}{% endif %}
+  <h1>登录</h1>
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">登录</button>
+  </form>
+  <a href="{% url 'register' %}">没有账号？注册</a>
+</body>
+</html>
