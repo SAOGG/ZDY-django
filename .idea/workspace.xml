@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e2f93ff8-b930-4b1b-ac47-e51d28825681" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/login_email.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blind_date_box/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/blind_date_box/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blind_date_box/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/blind_date_box/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blogsystem/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/blogsystem/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/users_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/users_table.html" afterDir="false" />
-    </list>
+    <list default="true" id="e2f93ff8-b930-4b1b-ac47-e51d28825681" name="更改" comment="添加了邮箱验证码登录功能" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -147,8 +135,17 @@
       <workItem from="1763014546039" duration="620000" />
       <workItem from="1763126052800" duration="732000" />
       <workItem from="1763267374950" duration="335000" />
-      <workItem from="1763357585745" duration="4294000" />
+      <workItem from="1763357585745" duration="4874000" />
     </task>
+    <task id="LOCAL-00001" summary="添加了邮箱验证码登录功能">
+      <option name="closed" value="true" />
+      <created>1763362474951</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1763362474951</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -164,5 +161,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="添加了邮箱验证码登录功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加了邮箱验证码登录功能" />
   </component>
 </project>
