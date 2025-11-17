@@ -5,23 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2f93ff8-b930-4b1b-ac47-e51d28825681" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/blogsystem.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/blind_date_box/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/register.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/users_table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/login_email.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blind_date_box/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/blind_date_box/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blind_date_box/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/blind_date_box/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blogsystem/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/blogsystem/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/users_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/users_table.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseLocalColorSettings">
+    <colors>
+      <entry key="e9e8d377-571a-4480-b1ae-03ab815fd309" value="Blue" />
+    </colors>
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -33,7 +40,20 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;SAOGG&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/SAOGG/ZDY-django.git&quot;,
+    &quot;accountId&quot;: &quot;e323e55c-ce63-4b76-b0f6-db52c215f2ab&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -50,16 +70,21 @@
     "DefaultHtmlFileTemplate": "HTML File",
     "Django 服务器.blogsystem.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found": "找到数据库连接形参",
+    "Notification.DoNotAsk-DatabaseConfigFileWatcher.found": "true",
     "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "django.template.preview.state": "SHOW_EDITOR_AND_PREVIEW",
     "git-widget-placeholder": "master",
+    "last_opened_file_path": "E:/Django/blogsystem",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "fr.baretto.ollamassist.setting.OllamassistSettingsConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -108,6 +133,21 @@
       <workItem from="1761996396755" duration="2528000" />
       <workItem from="1762045565903" duration="119000" />
       <workItem from="1762062255808" duration="11638000" />
+      <workItem from="1762090399225" duration="269000" />
+      <workItem from="1762090682860" duration="177000" />
+      <workItem from="1762091444860" duration="1140000" />
+      <workItem from="1762127701393" duration="1583000" />
+      <workItem from="1762145166706" duration="76000" />
+      <workItem from="1762176374240" duration="987000" />
+      <workItem from="1762387740806" duration="3798000" />
+      <workItem from="1762430933450" duration="2685000" />
+      <workItem from="1762683446917" duration="235000" />
+      <workItem from="1762734172907" duration="782000" />
+      <workItem from="1762753287929" duration="3338000" />
+      <workItem from="1763014546039" duration="620000" />
+      <workItem from="1763126052800" duration="732000" />
+      <workItem from="1763267374950" duration="335000" />
+      <workItem from="1763357585745" duration="4294000" />
     </task>
     <servers />
   </component>

@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>用户列表</h1>
-  <table border="1" cellspacing="0" cellpadding="6">
+  <table>
     <thead>
       <tr>
         <th>ID</th><th>用户名</th><th>邮箱</th><th>注册时间</th><th>is_staff</th><th>is_active</th>
@@ -27,5 +27,6 @@
       {% endfor %}
     </tbody>
   </table>
+<a href="{% url 'home' %}">点击返回主页</a>
 </body>
 </html>

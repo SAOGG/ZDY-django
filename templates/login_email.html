@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>邮箱验证码登录</title>
+</head>
+<body>
+{% if messages %}{% for m in messages %}<p>{{ m }}</p>{% endfor %}{% endif %}
+  <h1>邮箱验证码登录</h1>
+
+  <h2>发送验证码</h2>
+  <form method="post" action="{% url 'send_login_code' %}">{% csrf_token %}
+    {{ send_form.email.label_tag }} {{ send_form.email }}
+    <button type="submit">发送验证码到邮箱</button>
+  </form>
+
+ {% if session_email %}
+    <p>将登录邮箱：<strong>{{ session_email }}</strong></p>
+  {% else %}
+    <p>尚未选择邮箱，请先在上方发送验证码。</p>
+  {% endif %}
+  <form method="post" action="{% url 'email_login' %}">{% csrf_token %}
+    {{ login_form.code.label_tag }} {{ login_form.code }}<br>
+    <button type="submit">使用验证码登录</button>
+  </form>
+
+
+  <p><a href="{% url 'login' %}">使用密码登录</a></p>
+  <p><a href="{% url 'home' %}">返回主页</a></p>
+
+</body>
+</html>

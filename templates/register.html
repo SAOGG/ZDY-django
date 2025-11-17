@@ -7,6 +7,7 @@
 <body>
 {% if messages %}{% for m in messages %}<p>{{ m }}</p>{% endfor %}{% endif %}
   <h1>注册</h1>
+  <h2></h2>
   <form method="post">{% csrf_token %}
     {{ form.as_p }}
     <button type="submit">注册</button>

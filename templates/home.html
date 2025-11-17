@@ -13,5 +13,17 @@
   {% else %}
     <a href="{% url 'login' %}">登录</a> | <a href="{% url 'register' %}">注册</a>
   {% endif %}
+{% if user.is_staff %}
+    <a href="{% url 'users_table' %}">点击查看用户</a>
+{% else %}
+    {% with message="您无权访问用户列表" %}
+        <script>
+            window.onload = function() {
+                alert({{ message|escapejs }});
+                setTimeout(function() { location.href = "{{ request.path }}" }, 5000);
+            }
+        </script>
+    {% endwith %}
+{% endif %}
 </body>
 </html>
