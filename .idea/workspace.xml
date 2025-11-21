@@ -135,7 +135,7 @@
       <workItem from="1763014546039" duration="620000" />
       <workItem from="1763126052800" duration="732000" />
       <workItem from="1763267374950" duration="335000" />
-      <workItem from="1763357585745" duration="4874000" />
+      <workItem from="1763357585745" duration="5129000" />
     </task>
     <task id="LOCAL-00001" summary="添加了邮箱验证码登录功能">
       <option name="closed" value="true" />
@@ -145,7 +145,39 @@
       <option name="project" value="LOCAL" />
       <updated>1763362474951</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="添加了邮箱验证码登录功能">
+      <option name="closed" value="true" />
+      <created>1763362626248</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1763362626248</updated>
+    </task>
+    <task id="LOCAL-00003" summary="添加了邮箱验证码登录功能">
+      <option name="closed" value="true" />
+      <created>1763362654583</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1763362654583</updated>
+    </task>
+    <task id="LOCAL-00004" summary="添加了邮箱验证码登录功能">
+      <option name="closed" value="true" />
+      <created>1763362691761</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1763362691761</updated>
+    </task>
+    <task id="LOCAL-00005" summary="添加了邮箱验证码登录功能">
+      <option name="closed" value="true" />
+      <created>1763362719644</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1763362719644</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
