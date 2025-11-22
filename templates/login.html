@@ -3,15 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>登录</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static "login.css" %}">
 </head>
 <body>
 {% if messages %}{% for m in messages %}<p>{{ m }}</p>{% endfor %}{% endif %}
   <h1>登录</h1>
   <form method="post">{% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">登录</button>
+      <div class="btn-box">
+      <a href="{% url 'email_login' %}">使用邮箱验证码登录</a>
+            <div>
+                <button type="submit">登录</button>
+                <button onclick="window.location.href='{% url 'register' %}'" >注册</button>
+                </div>
+          </div>
   </form>
-  <a href="{% url 'register' %}">没有账号？注册</a>
-<a href="{% url 'email_login' %}">使用邮箱验证码登录</a>
 </body>
 </html>
