@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -9,6 +9,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
 from django.core.cache import cache
 from django.core.mail import send_mail
+from django.core.files.storage import default_storage
+from .models import Profile, Blog, Comment
+from .forms import AvatarUploadForm, BlogForm, CommentForm
 import random
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -187,3 +190,91 @@ def email_login_view(request):
         login_form = EmailCodeLoginForm()
         session_email = request.session.get('email_for_login')
         return render(request, "login_email.html", {"send_form": send_form, "login_form": login_form,"session_email": session_email})
+
+
+# 头像上传视图
+@login_required(login_url="login")
+def upload_avatar_view(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    if request.method == 'POST':
+        form = AvatarUploadForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "头像已更新")
+            return redirect('home')
+    else:
+        form = AvatarUploadForm(instance=profile)
+    return render(request, 'upload_avatar.html', {'form': form})
+
+
+# 博客相关视图
+@login_required(login_url="login")
+def create_blog_view(request):
+    if request.method == 'POST':
+        form = BlogForm(request.POST)
+        if form.is_valid():
+            blog = form.save(commit=False)
+            blog.author = request.user
+            blog.save()
+            messages.success(request, "博客发布成功")
+            return redirect('home')
+    else:
+        form = BlogForm()
+    return render(request, 'create_blog.html', {'form': form})
+
+
+def blog_detail_view(request, blog_id):
+    blog = get_object_or_404(Blog, id=blog_id)
+    comments = blog.comments.filter(parent=None)  # 只获取顶级评论
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid() and request.user.is_authenticated:
+            comment = form.save(commit=False)
+            comment.blog = blog
+            comment.author = request.user
+            parent_id = form.cleaned_data.get('parent_id')
+            if parent_id:
+                parent_comment = Comment.objects.get(id=parent_id)
+                comment.parent = parent_comment
+            comment.save()
+            return redirect('blog_detail', blog_id=blog.id)
+    else:
+        form = CommentForm()
+    return render(request, 'blog_detail.html', {
+        'blog': blog,
+        'comments': comments,
+        'form': form
+    })
+
+
+# 相亲盲盒视图
+@login_required(login_url="login")
+def blind_date_view(request):
+    # 排除当前用户的随机用户
+    other_users = User.objects.exclude(id=request.user.id)
+    if other_users.exists():
+        random_user = random.choice(other_users)
+        # 获取用户昵称，没有则用用户名
+        profile = getattr(random_user, 'profile', None)
+        nickname = profile.nickname if profile and profile.nickname else random_user.username
+        avatar = profile.avatar if profile and profile.avatar else None
+    else:
+        random_user = None
+        nickname = None
+        avatar = None
+
+    return render(request, 'blind_date.html', {
+        'random_user': random_user,
+        'nickname': nickname,
+        'avatar': avatar
+    })
+
+
+# 更新主页视图，添加博客列表
+@login_required(login_url="login")
+def home_view(request):
+    blogs = Blog.objects.all()  # 获取所有博客
+    return render(request, "home.html", {
+        "user": request.user,
+        "blogs": blogs
+    })

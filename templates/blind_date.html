@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>相亲盲盒</title>
+    {% load static %}
+</head>
+<body>
+    <h1>相亲盲盒</h1>
+    {% if random_user %}
+        <div class="match-card">
+            <h2>你的匹配对象</h2>
+            {% if avatar %}
+                <img src="{{ avatar.url }}" alt="头像" style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%;">
+            {% else %}
+                 <img src="{% static 'image/default-avatar.jpg' %}" alt="默认头像" style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%;">
+            {% endif %}
+            <h3>{{ nickname }}</h3>
+        </div>
+    {% else %}
+        <p>暂无其他用户</p>
+    {% endif %}
+    <br>
+    <a href="{% url 'blind_date' %}">再抽一次</a>
+    <br>
+    <a href="{% url 'home' %}">返回主页</a>
+</body>
+</html>

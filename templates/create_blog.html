@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>发布博客</title>
+</head>
+<body>
+    <h1>发布新博客</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">发布</button>
+    </form>
+    <a href="{% url 'home' %}">返回主页</a>
+</body>
+</html>
