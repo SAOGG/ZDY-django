@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>私信列表</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>私信列表</h1>
+
+        <div class="card">
+            {% for user in chat_users %}
+                <div class="chat-item">
+                    <a href="{% url 'message_detail' user.id %}" style="text-decoration: none; color: inherit;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            {% if user.profile.avatar %}
+                                <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}"
+                                     style="width: 50px; height: 50px; border-radius: 50%;">
+                            {% else %}
+                                <img src="{% static 'image/default-avatar.jpg' %}" alt="默认头像"
+                                     style="width: 50px; height: 50px; border-radius: 50%;">
+                            {% endif %}
+
+                            <div>
+                                <h4>
+                                    {% if user.profile.nickname %}{{ user.profile.nickname }}{% else %}{{ user.username }}{% endif %}
+                                </h4>
+                                {% with last_msg=user.sent_messages.last %}
+                                    {% if last_msg %}
+                                        <p style="color: #666; font-size: 14px;">{{ last_msg.content|truncatechars:20 }}</p>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <p style="padding: 20px; text-align: center;">暂无私信</p>
+            {% endfor %}
+        </div>
+
+        <br>
+        <a href="{% url 'home' %}" class="btn btn-secondary">返回主页</a>
+    </div>
+</body>
+</html>

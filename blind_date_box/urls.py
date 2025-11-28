@@ -13,6 +13,12 @@ urlpatterns = [
     path('create-blog/', views.create_blog_view, name='create_blog'),
     path('blog/<uuid:blog_id>/', views.blog_detail_view, name='blog_detail'),
     path('blind-date/', views.blind_date_view, name='blind_date'),
+    path('edit-profile/', views.edit_profile_view, name='edit_profile'),
+    path('messages/', views.messages_list_view, name='messages_list'),
+    path('messages/<int:user_id>/', views.message_detail_view, name='message_detail'),
+    path('add-friend/<int:user_id>/', views.add_friend_view, name='add_friend'),
+    path('friend-requests/', views.friend_requests_view, name='friend_requests'),
+    path('handle-request/<int:request_id>/<str:action>/', views.handle_friend_request_view, name='handle_friend_request'),
 ]
 # 开发环境下提供媒体文件访问
 #if settings.DEBUG:

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">  <!-- 改为中文适配 -->
+<head>
+    <meta charset="UTF-8">
+    <title>填写个人信息 - 相亲盲盒系统</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- 预留背景图：你可替换为自己的图片路径 -->
+    <style>
+        :root {
+            --bg-image: url("{% static 'image/bg.jpg' %}");  
+        }
+        body {
+            /* 背景图样式优化 */
+            background-color: #f5f5f5;
+            background-blend-mode: overlay;
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #FB7299;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="profile-header">
+            <h1>填写你的个人信息</h1>
+            <p>完善信息后，别人在相亲盲盒中能看到你的资料哦～</p>
+        </div>
+
+        <!-- 消息提示（保存成功/失败） -->
+        {% if messages %}
+            <div class="messages">
+                {% for msg in messages %}
+                    <p>{{ msg }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- 核心表单：填写年龄/性别/身高/体重/爱好 -->
+        <div class="card profile-form">
+            <form method="post" enctype="multipart/form-data">  <!-- enctype支持头像上传 -->
+                {% csrf_token %}  <!-- Django必加：防跨站攻击 -->
+
+                <!-- 基础信息组 -->
+                <div class="profile-section">
+                    <h3>👤 基础信息</h3>
+                    <div class="form-group">
+                        <label for="nickname">昵称 <span style="color: #FB7299;">*</span></label>
+                        <input type="text" id="nickname" name="nickname" class="form-control" 
+                               value="{{ profile.nickname|default:'' }}" placeholder="请输入你的昵称">
+                    </div>
+                    <div class="form-group">
+                        <label for="age">年龄 <span style="color: #FB7299;">*</span></label>
+                        <input type="number" id="age" name="age" class="form-control" 
+                               value="{{ profile.age|default:'' }}" placeholder="请输入你的年龄（如：25）" min="18" max="80">
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">性别 <span style="color: #FB7299;">*</span></label>
+                        <select id="gender" name="gender" class="form-control" required>
+                            <option value="">请选择性别</option>
+                            <option value="male" {% if profile.gender == 'male' %}selected{% endif %}>男</option>
+                            <option value="female" {% if profile.gender == 'female' %}selected{% endif %}>女</option>
+                            <option value="other" {% if profile.gender == 'other' %}selected{% endif %}>其他</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 身体信息组 -->
+                <div class="profile-section">
+                    <h3>📏 身体信息</h3>
+                    <div class="form-group">
+                        <label for="height">身高（cm）</label>
+                        <input type="number" id="height" name="height" class="form-control" 
+                               value="{{ profile.height|default:'' }}" placeholder="如：175" min="100" max="250">
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">体重（kg）</label>
+                        <input type="number" step="0.1" id="weight" name="weight" class="form-control" 
+                               value="{{ profile.weight|default:'' }}" placeholder="如：65.5" min="30" max="200">
+                    </div>
+                </div>
+
+                <!-- 其他信息组 -->
+                <div class="profile-section">
+                    <h3>✨ 其他信息</h3>
+                    <div class="form-group">
+                        <label for="hobbies">爱好 <span style="color: #999; font-size: 12px;">（用逗号分隔，如：看电影,跑步,读书）</span></label>
+                        <input type="text" id="hobbies" name="hobbies" class="form-control" 
+                               value="{{ profile.hobbies|default:'' }}" placeholder="请输入你的爱好">
+                    </div>
+                    <div class="form-group">
+                        <label for="avatar">头像（可选）</label>
+                        <input type="file" id="avatar" name="avatar" class="form-control" accept="image/*">
+                        <!-- 预览当前头像 -->
+                        {% if profile.avatar %}
+                            <div style="margin-top: 10px;">
+                                <img src="{{ profile.avatar.url }}" alt="当前头像" style="width: 100px; height: 100px; border-radius: 50%;">
+                                <p style="font-size: 12px; color: #666;">当前头像</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- 提交按钮 -->
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="submit" class="btn" style="padding: 10px 30px; font-size: 16px;">保存个人信息</button>
+                    <a href="{% url 'home' %}" class="btn btn-secondary" style="margin-left: 15px;">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

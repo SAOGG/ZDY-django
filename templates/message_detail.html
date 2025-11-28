@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>与 {{ other_user.username }} 聊天</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>
+            与
+            {% if other_user.profile.nickname %}{{ other_user.profile.nickname }}{% else %}{{ other_user.username }}{% endif %}
+            聊天
+        </h1>
+
+        {% if messages %}
+            <div class="messages">
+                {% for m in messages %}
+                    <p>{{ m }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="card chat-container">
+            <div class="chat-content">
+                <div class="chat-messages" id="messageContainer">
+                    {% for msg in messages %}
+                        <div class="message {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
+                            <p>{{ msg.content }}</p>
+                            <small style="font-size: 12px; opacity: 0.7;">{{ msg.created_at|date:"H:i" }}</small>
+                        </div>
+                    {% empty %}
+                        <p style="text-align: center; color: #666;">暂无消息，开始聊天吧！</p>
+                    {% endfor %}
+                </div>
+
+                <div class="chat-input">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="text" name="content" placeholder="输入消息...">
+                        <button type="submit" class="btn">发送</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if not is_friend %}
+            <div style="margin-top: 10px; color: #666; font-size: 14px;">
+                提示：未添加好友，目前可发送 {{ sent_count }}/{{ message_limit }} 条消息，对方回复后可继续发送。
+                <a href="{% url 'add_friend' other_user.id %}" style="color: #23ADE5;">添加好友</a>
+            </div>
+        {% endif %}
+
+        <br>
+        <a href="{% url 'messages_list' %}" class="btn btn-secondary">返回消息列表</a>
+    </div>
+
+    <script>
+        // 自动滚动到底部
+        window.onload = function() {
+            const container = document.getElementById('messageContainer');
+            container.scrollTop = container.scrollHeight;
+        };
+    </script>
+</body>
+</html>

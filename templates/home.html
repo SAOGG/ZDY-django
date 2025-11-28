@@ -47,10 +47,22 @@
     {% endif %}
 
     <div class="user-actions">
-        <a href="{% url 'upload_avatar' %}">修改头像和昵称</a> |
+         <a href="{% url 'edit_profile' %}">填写/编辑个人信息</a> |
         <a href="{% url 'create_blog' %}">发布博客</a> |
         <a href="{% url 'blind_date' %}">相亲盲盒</a> |
         <a href="{% url 'logout' %}">退出</a>
+         <a href="{% url 'messages_list' %}">
+        私信
+        {% if unread_count > 0 %}
+            <span style="background-color: #FB7299; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px;">{{ unread_count }}</span>
+        {% endif %}
+    </a> |
+    {% if friend_request_count > 0 %}
+        <a href="{% url 'friend_requests' %}">
+            好友请求
+            <span style="background-color: #23ADE5; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px;">{{ friend_request_count }}</span>
+        </a> |
+    {% endif %}
     </div>
 </div>
 
