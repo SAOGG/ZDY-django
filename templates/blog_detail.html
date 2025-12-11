@@ -23,30 +23,30 @@
             font-weight: bold;
             color: #586069;
         }
-        
+
         .comment-author {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
+
         .author-info {
             display: flex;
             flex-direction: column;
         }
-        
+
         .author-name {
             font-weight: 700;
             color: #24292e;
             font-size: 0.9375rem;
         }
-        
+
         .reply-author {
             display: flex;
             align-items: center;
             gap: 6px;
         }
-        
+
         .reply-avatar {
             width: 24px;
             height: 24px;
@@ -54,141 +54,147 @@
             object-fit: cover;
             border: 1px solid #e1e4e8;
         }
+
         .author-name-link {
-        text-decoration: none;
-        color: inherit;
-        display: inline-block;
-    }
-    
-    .author-name-link:hover {
-        text-decoration: underline;
-        color: #0366d6;
-    }
-    
-    .reply-author-link {
-        text-decoration: none;
-        color: inherit;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-    
-    .reply-author-link:hover .reply-author-name {
-        text-decoration: underline;
-        color: #0366d6;
-    }
-    
-    /* 确保头像链接不破坏布局 */
-    .comment-author a:first-child {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-    }
+            text-decoration: none;
+            color: inherit;
+            display: inline-block;
+        }
+
+        .author-name-link:hover {
+            text-decoration: underline;
+            color: #0366d6;
+        }
+
+        .reply-author-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .reply-author-link:hover .reply-author-name {
+            text-decoration: underline;
+            color: #0366d6;
+        }
+
+        /* 确保头像链接不破坏布局 */
+        .comment-author a:first-child {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="{% url 'home' %}" class="navbar-brand">GitBlog</a>
-        <div class="navbar-actions">
-            {% if user.is_authenticated %}
-                <div class="user-info">
-                    <i class="fas fa-user-circle"></i> {{ user.username }}
-                </div>
-                <a href="{% url 'logout' %}" class="nav-link">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-            {% else %}
-                <a href="{% url 'login' %}" class="nav-link">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </a>
-            {% endif %}
-        </div>
-    </nav>
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="navbar-brand">GitBlog</a>
+    <div class="navbar-actions">
+        {% if user.is_authenticated %}
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i> {{ user.username }}
+            </div>
+            <button id="theme-toggle" class="nav-link" style="border: none; background: none; cursor: pointer;">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="{% url 'logout' %}" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}" class="nav-link">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        {% endif %}
+    </div>
+</nav>
 
-    <div class="main-container">
-        <article class="blog-container">
-            <h1 class="blog-title">{{ blog.title }}</h1>
-            
-            <div class="blog-meta">
-                <div class="meta-item author">
-                    <!-- 博客作者头像 -->
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        {% if blog.author.profile.avatar %}
-                            <img src="{{ blog.author.profile.avatar.url }}" alt="{{ blog.author.username }}" 
-                                 style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
-                        {% else %}
-                            <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #0366d6; 
+<div class="main-container">
+    <article class="blog-container">
+        <h1 class="blog-title">{{ blog.title }}</h1>
+
+        <div class="blog-meta">
+            <div class="meta-item author">
+                <!-- 博客作者头像 -->
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    {% if blog.author.profile.avatar %}
+                        <img src="{{ blog.author.profile.avatar.url }}" alt="{{ blog.author.username }}"
+                             style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                    {% else %}
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #0366d6; 
                                         color: white; display: flex; align-items: center; justify-content: center;
                                         font-weight: bold;">
-                                {{ blog.author.username|slice:":1"|upper }}
-                            </div>
-                        {% endif %}
-                        <strong>{{ blog.author.username }}</strong>
-                    </div>
-                </div>
-                <div class="meta-item date">
-                    {{ blog.created_at }}
-                </div>
-                <div class="meta-item" style="margin-left: auto;">
-                    <i class="far fa-comments"></i> {{ comments|length }} comments
+                            {{ blog.author.username|slice:":1"|upper }}
+                        </div>
+                    {% endif %}
+                    <strong>{{ blog.author.username }}</strong>
                 </div>
             </div>
-            
-            <!-- 显示博客图片 -->
-            {% if blog.image %}
+            <div class="meta-item date">
+                {{ blog.created_at }}
+            </div>
+            <div class="meta-item" style="margin-left: auto;">
+                <i class="far fa-comments"></i> {{ comments|length }} comments
+            </div>
+        </div>
+
+        <!-- 显示博客图片 -->
+        {% if blog.image %}
             <div class="blog-image-container">
                 <img src="{{ blog.image.url }}" alt="{{ blog.title }}" class="blog-featured-image">
             </div>
-            {% endif %}
-            
-            <div class="blog-content">
-                {{ blog.content|linebreaks }}
-            </div>
-            
-            <div class="action-buttons">
-                <a href="{% url 'home' %}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Home
-                </a>
-                {% if user.is_authenticated and user == blog.author %}
-                    <a href="{% url 'edit_blog' blog.id %}" class="btn btn-primary">
-                        <i class="fas fa-edit"></i> Edit Blog
-                     </a>
-                {% endif %}
-            </div>
-        </article>
+        {% endif %}
 
-        <section class="comments-section">
-            <h2 class="section-title">Comments</h2>
-            
-            {% if user.is_authenticated %}
+        <div class="blog-content">
+            {{ blog.content|linebreaks }}
+        </div>
+
+        <div class="action-buttons">
+            <a href="{% url 'home' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            {% if user.is_authenticated and user == blog.author %}
+                <a href="{% url 'edit_blog' blog.id %}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit Blog
+                </a>
+            {% endif %}
+        </div>
+    </article>
+
+    <section class="comments-section">
+        <h2 class="section-title">Comments</h2>
+
+        {% if user.is_authenticated %}
             <div class="comment-form">
                 <div class="comment-form-header">Add a comment</div>
                 <form method="post">
                     {% csrf_token %}
                     <label for="comment-content" class="sr-only">Comment content</label>
-                    <textarea name="content" id="comment-content" rows="4" placeholder="Write your comment here..."></textarea>
+                    <textarea name="content" id="comment-content" rows="4"
+                              placeholder="Write your comment here..."></textarea>
                     <button type="submit" class="btn btn-primary" style="margin-top: 16px;">
                         <i class="fas fa-paper-plane"></i> Post Comment
                     </button>
                 </form>
             </div>
-            {% else %}
+        {% else %}
             <div class="login-prompt">
-                <p>Please <a href="{% url 'login' %}?next={{ request.path }}" class="nav-link">login</a> to post a comment</p>
+                <p>Please <a href="{% url 'login' %}?next={{ request.path }}" class="nav-link">login</a> to post a
+                    comment</p>
             </div>
-            {% endif %}
+        {% endif %}
 
-            <div class="comments">
-                {% for comment in comments %}
+        <div class="comments">
+            {% for comment in comments %}
                 <div class="comment" style="--comment-index: {{ forloop.counter0 }};">
                     <div class="comment-header">
                         <div class="comment-author">
                             <!-- 评论者头像 -->
                             <a href="{% url 'user_profile' comment.author.id %}">
                                 {% if comment.author.profile.avatar %}
-                                    <img src="{{ comment.author.profile.avatar.url }}" 
-                                         alt="{{ comment.author.username }}" 
+                                    <img src="{{ comment.author.profile.avatar.url }}"
+                                         alt="{{ comment.author.username }}"
                                          class="author-avatar-img">
                                 {% else %}
                                     <div class="author-avatar-img">
@@ -209,25 +215,25 @@
                                 <span class="comment-time">{{ comment.created_at }}</span>
                             </div>
                         </div>
-                        
+
                         <!-- 删除按钮放在评论头部 -->
                         <div class="comment-actions">
                             {% if user.is_authenticated %}
                                 <button class="reply-btn" onclick="replyTo({{ comment.id }})">
                                     <i class="fas fa-reply"></i> Reply
                                 </button>
-                                
+
                                 <!-- 评论作者可以删除自己的评论 -->
                                 {% if comment.author == user %}
-                                    <button class="delete-comment-btn" data-comment-id="{{ comment.id }}" 
+                                    <button class="delete-comment-btn" data-comment-id="{{ comment.id }}"
                                             style="background-color: #d73a49; color: white; margin-left: 8px;">
                                         <i class="fas fa-trash"></i> Delete
                                     </button>
                                 {% endif %}
-                                
+
                                 <!-- 博客作者可以删除任何评论 -->
                                 {% if blog.author == user and comment.author != user %}
-                                    <button class="delete-comment-btn" data-comment-id="{{ comment.id }}" 
+                                    <button class="delete-comment-btn" data-comment-id="{{ comment.id }}"
                                             style="background-color: #d73a49; color: white; margin-left: 8px;">
                                         <i class="fas fa-trash"></i> Delete Comment
                                     </button>
@@ -235,7 +241,7 @@
                             {% endif %}
                         </div>
                     </div>
-                    
+
                     <div class="comment-body">
                         {{ comment.content|linebreaks }}
                     </div>
@@ -245,8 +251,10 @@
                         <form method="post">
                             {% csrf_token %}
                             <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                            <label for="reply-content-{{ comment.id }}" class="sr-only">Reply to {{ comment.author.username }}</label>
-                            <textarea name="content" id="reply-content-{{ comment.id }}" rows="3" placeholder="Reply to @{{ comment.author.username }}"></textarea>
+                            <label for="reply-content-{{ comment.id }}" class="sr-only">Reply
+                                to {{ comment.author.username }}</label>
+                            <textarea name="content" id="reply-content-{{ comment.id }}" rows="3"
+                                      placeholder="Reply to @{{ comment.author.username }}"></textarea>
                             <button type="submit" class="btn btn-primary" style="margin-top: 12px;">
                                 <i class="fas fa-reply"></i> Post Reply
                             </button>
@@ -254,138 +262,178 @@
                     </div>
 
                     {% if comment.replies.exists %}
-                    <div class="replies">
-                        {% for reply in comment.replies.all %}
-                        <div class="reply">
-                            <div class="reply-header">
-                                <a href="{% url 'user_profile' reply.author.id %}" class="reply-author-link">
-                                    <div class="reply-author">
-                                        <!-- 回复者头像 -->
-                                        {% if reply.author.profile.avatar %}
-                                            <img src="{{ reply.author.profile.avatar.url }}" 
-                                                 alt="{{ reply.author.username }}" 
-                                                 class="reply-avatar">
-                                        {% else %}
-                                            <div style="width: 24px; height: 24px; border-radius: 50%; background-color: #0366d6; 
+                        <div class="replies">
+                            {% for reply in comment.replies.all %}
+                                <div class="reply">
+                                    <div class="reply-header">
+                                        <a href="{% url 'user_profile' reply.author.id %}" class="reply-author-link">
+                                            <div class="reply-author">
+                                                <!-- 回复者头像 -->
+                                                {% if reply.author.profile.avatar %}
+                                                    <img src="{{ reply.author.profile.avatar.url }}"
+                                                         alt="{{ reply.author.username }}"
+                                                         class="reply-avatar">
+                                                {% else %}
+                                                    <div style="width: 24px; height: 24px; border-radius: 50%; background-color: #0366d6; 
                                                         color: white; display: flex; align-items: center; justify-content: center;
                                                         font-size: 0.75rem; font-weight: bold;">
-                                                {{ reply.author.username|slice:":1"|upper }}
-                                            </div>
-                                        {% endif %}
-                                        <span class="reply-author-name">
+                                                        {{ reply.author.username|slice:":1"|upper }}
+                                                    </div>
+                                                {% endif %}
+                                                <span class="reply-author-name">
                                             {% if reply.author.profile.nickname %}
                                                 {{ reply.author.profile.nickname }}
                                             {% else %}
                                                 {{ reply.author.username }}
                                             {% endif %}
                                         </span>
-                                    </div>
-                                </a>
-                                <span class="reply-to">replied to</span>
-                                <a href="{% url 'user_profile' reply.parent.author.id %}" class="reply-author-link">
-                                    <div class="reply-author">
-                                        <!-- 被回复者头像 -->
-                                        {% if reply.parent.author.profile.avatar %}
-                                            <img src="{{ reply.parent.author.profile.avatar.url }}" 
-                                                 alt="{{ reply.parent.author.username }}" 
-                                                 class="reply-avatar">
-                                        {% else %}
-                                            <div style="width: 24px; height: 24px; border-radius: 50%; background-color: #6f42c1; 
+                                            </div>
+                                        </a>
+                                        <span class="reply-to">replied to</span>
+                                        <a href="{% url 'user_profile' reply.parent.author.id %}"
+                                           class="reply-author-link">
+                                            <div class="reply-author">
+                                                <!-- 被回复者头像 -->
+                                                {% if reply.parent.author.profile.avatar %}
+                                                    <img src="{{ reply.parent.author.profile.avatar.url }}"
+                                                         alt="{{ reply.parent.author.username }}"
+                                                         class="reply-avatar">
+                                                {% else %}
+                                                    <div style="width: 24px; height: 24px; border-radius: 50%; background-color: #6f42c1; 
                                                         color: white; display: flex; align-items: center; justify-content: center;
                                                         font-size: 0.75rem; font-weight: bold;">
-                                                {{ reply.parent.author.username|slice:":1"|upper }}
-                                            </div>
-                                        {% endif %}
-                                        <span class="reply-author-name">
+                                                        {{ reply.parent.author.username|slice:":1"|upper }}
+                                                    </div>
+                                                {% endif %}
+                                                <span class="reply-author-name">
                                             {% if reply.parent.author.profile.nickname %}
                                                 {{ reply.parent.author.profile.nickname }}
                                             {% else %}
                                                 {{ reply.parent.author.username }}
                                             {% endif %}
                                         </span>
+                                            </div>
+                                        </a>
+                                        <span class="reply-time">{{ reply.created_at }}</span>
                                     </div>
-                                </a>
-                                <span class="reply-time">{{ reply.created_at }}</span>
-                            </div>
-                            <div class="reply-body">
-                                {{ reply.content|linebreaks }}
-                            </div>
+                                    <div class="reply-body">
+                                        {{ reply.content|linebreaks }}
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-                    </div>
                     {% endif %}
                 </div>
-                {% empty %}
+            {% empty %}
                 <div class="empty-state">
                     <p>No comments yet. Be the first to share your thoughts!</p>
                 </div>
-                {% endfor %}
-            </div>
-        </section>
-    </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
 
-    <script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+
+        // 检查本地存储或会话中的主题设置
+        const savedTheme = localStorage.getItem('theme') || '{{ request.session.theme|default:"light" }}';
+
+        // 应用保存的主题
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+
+        // 主题切换按钮点击事件
+        themeToggle.addEventListener('click', function () {
+            // 切换主题类
+            body.classList.toggle('dark-mode');
+
+            // 更新图标
+            if (body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                saveTheme('dark');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                saveTheme('light');
+            }
+        });
+    });
+
+    // 保存主题设置到本地存储和服务器
+    function saveTheme(theme) {
+        // 保存到本地存储
+        localStorage.setItem('theme', theme);
+
         function replyTo(commentId) {
             // 隐藏所有回复表单
             document.querySelectorAll('.reply-form').forEach(el => {
                 el.classList.remove('active');
             });
-            
+
             // 显示当前回复表单
             const replyForm = document.getElementById(`reply-form-${commentId}`);
             replyForm.classList.add('active');
-            
+
             // 聚焦到textarea
             const textarea = replyForm.querySelector('textarea');
             textarea.focus();
-            
+
             // 平滑滚动到表单
-            replyForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            replyForm.scrollIntoView({behavior: 'smooth', block: 'nearest'});
         }
-        
+
         // 添加动画延迟
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const comments = document.querySelectorAll('.comment');
             comments.forEach((comment, index) => {
                 comment.style.setProperty('--comment-index', index);
             });
-            
+
             // 为博客图片添加点击放大效果
             const blogImage = document.querySelector('.blog-featured-image');
             if (blogImage) {
-                blogImage.addEventListener('click', function() {
+                blogImage.addEventListener('click', function () {
                     this.classList.toggle('zoomed');
                 });
             }
         });
-          // 删除评论功能
-    document.querySelectorAll('.delete-comment-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const commentId = this.dataset.commentId;
-            
-            if (confirm('确定要删除这条评论吗？')) {
-                fetch(`/comments/${commentId}/delete/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        this.closest('.comment').remove();
-                        showToast('评论删除成功', 'success');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('删除失败，请重试', 'error');
-                });
-            }
+        // 删除评论功能
+        document.querySelectorAll('.delete-comment-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const commentId = this.dataset.commentId;
+
+                if (confirm('确定要删除这条评论吗？')) {
+                    fetch(`/comments/${commentId}/delete/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.closest('.comment').remove();
+                                showToast('评论删除成功', 'success');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showToast('删除失败，请重试', 'error');
+                        });
+                }
+            });
         });
-    });
-    
+    }
+
     // 获取CSRF令牌的函数
     function getCookie(name) {
         let cookieValue = null;
@@ -401,6 +449,6 @@
         }
         return cookieValue;
     }
-    </script>
+</script>
 </body>
 </html>

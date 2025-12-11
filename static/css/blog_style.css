@@ -10,7 +10,47 @@ body {
 }
 
 /* 为body添加一个伪元素，作为遮罩层，确保文字可读性 */
+/* 黑夜模式变量 */
+body.dark-mode {
+    --color-bg-primary: #1a1a1a;
+    --color-bg-secondary: #2d2d2d;
+    --color-bg-tertiary: #333333;
+    --color-border-primary: #444444;
+    --color-border-secondary: #555555;
+    --color-text-primary: #e0e0e0;
+    --color-text-secondary: #bbbbbb;
+    --color-text-tertiary: #999999;
+    --color-accent: #4da6ff;
+    --color-success: #34d058;
+    --color-shadow: rgba(0, 0, 0, 0.3);
+    --color-shadow-hover: rgba(0, 0, 0, 0.5);
+}
 
+/* 黑夜模式下的背景图片处理 */
+body.dark-mode::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: -1;
+}
+
+/* 黑夜模式下的图片调整 */
+body.dark-mode img {
+    filter: brightness(0.8) contrast(1.2);
+}
+
+/* 黑夜模式下的按钮样式调整 */
+body.dark-mode .btn-primary {
+    background-color: #2d7ff9;
+}
+
+body.dark-mode .btn-primary:hover {
+    background-color: #1a66e0;
+}
 :root {
     --color-bg-primary: #ffffff;
     --color-bg-secondary: #f6f8fa;
