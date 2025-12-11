@@ -1,14 +1,48 @@
-<!-- create_blog.html 优化版 -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>创建博客 - GitBlog</title>
+    <title>编辑博客 - {{ blog.title }}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/blog_style.css' %}">
-    <!-- 替换原来的CDN链接 -->
-<link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <style>
+        .edit-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--gh-bg-secondary);
+            color: var(--gh-text-primary);
+            border: 1px solid var(--gh-border);
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background-color: var(--gh-bg-tertiary);
+            text-decoration: none;
+        }
+
+        .current-image {
+            margin-bottom: 1.5rem;
+        }
+
+        .current-image img {
+            max-width: 300px;
+            border-radius: 8px;
+            border: 2px solid var(--gh-border);
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -30,13 +64,18 @@
     </nav>
 
     <div class="create-blog-container">
+        <div class="edit-header">
+            <a href="{% url 'my_blogs' %}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> 返回我的博客
+            </a>
+            <h1 style="margin: 0; flex: 1;">编辑博客: {{ blog.title }}</h1>
+        </div>
+
         <article class="blog-container">
-            <h1 class="blog-title">创建新博客</h1>
-            
             <div class="blog-content">
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    
+
                     <!-- 显示消息 -->
                     {% if messages %}
                     <div class="messages">
@@ -47,12 +86,12 @@
                         {% endfor %}
                     </div>
                     {% endif %}
-                    
+
                     <div class="form-group">
                         <label for="id_title" class="form-label">
                             <i class="fas fa-heading"></i> 标题
                         </label>
-                        <input type="text" name="title" id="id_title" required 
+                        <input type="text" name="title" id="id_title" required
                                class="form-input" placeholder="请输入博客标题..." value="{{ form.title.value|default_if_none:'' }}">
                         {% if form.title.errors %}
                         <div class="error-message">
@@ -60,12 +99,27 @@
                         </div>
                         {% endif %}
                     </div>
-                    
+
+                    <!-- 显示当前图片 -->
+                    {% if blog.image %}
+                    <div class="form-group current-image">
+                        <label class="form-label">
+                            <i class="fas fa-image"></i> 当前博客图片
+                        </label>
+                        <div>
+                            <img src="{{ blog.image.url }}" alt="当前博客图片">
+                            <p style="color: var(--gh-text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+                                如需更换图片，请上传新图片
+                            </p>
+                        </div>
+                    </div>
+                    {% endif %}
+
                     <div class="form-group">
                         <label for="id_image" class="form-label">
-                            <i class="fas fa-image"></i> 博客图片（可选）
+                            <i class="fas fa-image"></i> {% if blog.image %}更换博客图片{% else %}博客图片（可选）{% endif %}
                         </label>
-                        <input type="file" name="image" id="id_image" 
+                        <input type="file" name="image" id="id_image"
                                class="form-file" accept="image/*">
                         <p class="form-help">支持格式：JPG, PNG, GIF。建议尺寸：1200×630px</p>
                         {% if form.image.errors %}
@@ -74,12 +128,12 @@
                         </div>
                         {% endif %}
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="id_content" class="form-label">
                             <i class="fas fa-edit"></i> 内容
                         </label>
-                        <textarea name="content" id="id_content" rows="15" required 
+                        <textarea name="content" id="id_content" rows="15" required
                                   class="form-textarea" placeholder="请输入博客内容...">{{ form.content.value|default_if_none:'' }}</textarea>
                         {% if form.content.errors %}
                         <div class="error-message">
@@ -87,13 +141,13 @@
                         </div>
                         {% endif %}
                     </div>
-                    
+
                     <div class="form-actions">
-                        <a href="{% url 'home' %}" class="btn btn-secondary">
+                        <a href="{% url 'my_blogs' %}" class="btn btn-secondary">
                             <i class="fas fa-times"></i> 取消
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> 发布博客
+                            <i class="fas fa-save"></i> 保存更改
                         </button>
                     </div>
                 </form>
@@ -102,37 +156,22 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 为表单元素添加焦点效果
-            const formInputs = document.querySelectorAll('.form-input, .form-textarea');
-            
-            formInputs.forEach(input => {
-                input.addEventListener('focus', function() {
-                    this.parentElement.classList.add('focused');
-                });
-                
-                input.addEventListener('blur', function() {
-                    if (this.value === '') {
-                        this.parentElement.classList.remove('focused');
-                    }
-                });
-            });
-            
-            // 图片预览功能
-            const imageInput = document.getElementById('id_image');
+        // 图片预览功能
+        const imageInput = document.getElementById('id_image');
+        if (imageInput) {
             const imagePreviewContainer = document.createElement('div');
             imagePreviewContainer.className = 'image-preview';
             imagePreviewContainer.style.display = 'none';
             imagePreviewContainer.style.marginTop = '10px';
-            
+
             const previewImage = document.createElement('img');
             previewImage.style.maxWidth = '200px';
             previewImage.style.borderRadius = '8px';
             previewImage.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
             imagePreviewContainer.appendChild(previewImage);
-            
+
             imageInput.parentNode.appendChild(imagePreviewContainer);
-            
+
             imageInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
@@ -146,16 +185,18 @@
                     imagePreviewContainer.style.display = 'none';
                 }
             });
-            
-            // 表单提交动画
-            const form = document.querySelector('form');
-            const submitBtn = form.querySelector('button[type="submit"]');
-            
+        }
+
+        // 表单提交动画
+        const form = document.querySelector('form');
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        if (form && submitBtn) {
             form.addEventListener('submit', function(e) {
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 发布中...';
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 保存中...';
                 submitBtn.disabled = true;
             });
-        });
+        }
     </script>
 </body>
 </html>

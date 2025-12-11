@@ -2,108 +2,470 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>主界面</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static "home.css" %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+   <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
 </head>
 <body>
- <!-- 新增：添加容器类，用于统一布局约束 -->
     <div class="container">
-        <!-- 修改：消息提示包裹在messages类中 -->
+        <!-- 消息提示 -->
         {% if messages %}
             <div class="messages">
                 {% for m in messages %}
-                    <p>{{ m }}</p>
+                    <div class="message {% if m.tags %}{{ m.tags }}{% endif %}">
+                        <i class="fas fa-info-circle"></i>
+                        <p>{{ m }}</p>
+                        <span class="close-message">&times;</span>
+                    </div>
                 {% endfor %}
             </div>
         {% endif %}
+
+        <!-- 顶部搜索和筛选栏 -->
+        <div class="top-toolbar">
+            <div class="search-container">
+                <form method="GET" action="{% url 'home' %}" class="search-form">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="q" placeholder="搜索博客标题或内容..." value="{{ request.GET.q }}" class="search-input">
+                        <button type="submit" class="search-btn">搜索</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="filter-container">
+                <div class="filter-tabs">
+                    <button class="filter-btn {% if not request.GET.filter or request.GET.filter == 'latest' %}active{% endif %}" data-filter="latest">
+                        <i class="fas fa-clock"></i> 最新
+                    </button>
+                    <button class="filter-btn {% if request.GET.filter == 'popular' %}active{% endif %}" data-filter="popular">
+                        <i class="fas fa-fire"></i> 最热
+                    </button>
+                    <button class="filter-btn {% if request.GET.filter == 'following' %}active{% endif %}" data-filter="following">
+                        <i class="fas fa-user-friends"></i> 关注
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <h1>主页</h1>
 
         {% if user.is_authenticated %}
             <div class="user-info">
-    <p>欢迎，
-        {% if user.profile.nickname %}
-            {{ user.profile.nickname }}
-        {% else %}
-            {{ user.username }}
-        {% endif %}
-        ({{ user.email }})
-    </p>
-
-    <!-- 头像显示逻辑 -->
-    {% if user.profile.avatar and user.profile.avatar.url %}
-        <!-- 如果用户有头像，显示用户头像，并添加 onerror 备用 -->
-        <img
-            src="{{ user.profile.avatar.url }}"
-            alt="{{ user.username }}的头像"
-        >
-    {% else %}
-        <!-- 如果用户没有头像，直接显示默认头像 -->
-        <img
-            src="{% static 'image/default-avatar.jpg' %}"
-            alt="默认头像"
-        >
-    {% endif %}
-
-    <div class="user-actions">
-         <a href="{% url 'edit_profile' %}">填写/编辑个人信息</a> |
-        <a href="{% url 'create_blog' %}">发布博客</a> |
-        <a href="{% url 'blind_date' %}">相亲盲盒</a> |
-        <a href="{% url 'logout' %}">退出</a>
-         <a href="{% url 'messages_list' %}">
-        私信
-        {% if unread_count > 0 %}
-            <span style="background-color: #FB7299; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px;">{{ unread_count }}</span>
-        {% endif %}
-    </a> |
-    {% if friend_request_count > 0 %}
-        <a href="{% url 'friend_requests' %}">
-            好友请求
-            <span style="background-color: #23ADE5; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px;">{{ friend_request_count }}</span>
-        </a> |
-    {% endif %}
-    </div>
-</div>
-
-            <hr>
-
-            <div class="blogs-section">
-                <h2>博客列表</h2>
-                {% for blog in blogs %}
-                    <div class="blog-card">
-                        <h3><a href="{% url 'blog_detail' blog.id %}">{{ blog.title }}</a></h3>
-                        <!-- 修改：添加博客元信息类 -->
-                        <p class="blog-meta">
-                            作者:
-                            {% if blog.author.profile.nickname %}
-                                {{ blog.author.profile.nickname }}
-                            {% else %}
-                                {{ blog.author.username }}
-                            {% endif %}
-                            | 发布时间: {{ blog.created_at|date:"Y-m-d H:i" }}
-                        </p>
-                        <!-- 修改：添加博客内容类 -->
-                        <p class="blog-content">{{ blog.content|truncatechars:200 }}</p>
-                        <a href="{% url 'blog_detail' blog.id %}">查看全文及评论 ({{ blog.comments.count }})</a>
+                <div class="user-main">
+                    <div class="avatar-container">
+                        {% if user.profile.avatar and user.profile.avatar.url %}
+                            <img
+                                src="{{ user.profile.avatar.url }}"
+                                alt="{{ user.username }}的头像"
+                                class="user-avatar"
+                            >
+                        {% else %}
+                            <img
+                                src="{% static 'image/default-avatar.jpg' %}"
+                                alt="默认头像"
+                                class="user-avatar"
+                            >
+                        {% endif %}
                     </div>
-                    <hr>
-                {% empty %}
-                    <p>暂无博客，<a href="{% url 'create_blog' %}">发布第一篇博客</a></p>
-                {% endfor %}
-            </div>
 
+                    <div class="user-details">
+                        <p class="welcome-text">欢迎，
+                            <span class="username">
+                                {% if user.profile.nickname %}
+                                    {{ user.profile.nickname }}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
+                            </span>
+                        </p>
+                        <p class="user-email">
+                            <i class="fas fa-envelope"></i> {{ user.email }}
+                        </p>
+
+                        {% if user.profile.bio %}
+                            <p class="user-bio">{{ user.profile.bio }}</p>
+                        {% endif %}
+
+                        <div class="user-stats">
+                            <div class="stat-item">
+                                <span class="stat-count">{{ user.authored_blogs.count|default:0 }}</span>
+                                <span class="stat-label">博客</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-count">{{ user.friends.count|default:0 }}</span>
+                                <span class="stat-label">好友</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-count">{{ user.comments.count|default:0 }}</span>
+                                <span class="stat-label">评论</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+
+                <div class="user-actions">
+                    <div class="action-buttons">
+                        <a href="{% url 'edit_profile' %}" class="action-btn">
+                            <i class="fas fa-user-edit"></i> 编辑资料
+                        </a>
+                        <a href="{% url 'create_blog' %}" class="action-btn primary">
+                            <i class="fas fa-plus-circle"></i> 发布博客
+                        </a>
+                        <a href="{% url 'my_blogs' %}" class="action-btn">
+            <i class="fas fa-file-alt"></i> 我的博客
+        </a>
+                        <a href="{% url 'blind_date' %}" class="action-btn">
+                            <i class="fas fa-heart"></i> 相亲盲盒
+                        </a>
+                    </div>
+
+                    <div class="quick-links">
+                        <a href="{% url 'messages_list' %}" class="quick-link">
+                            <i class="fas fa-envelope"></i> 私信
+                            {% if unread_count > 0 %}
+                                <span class="badge">{{ unread_count }}</span>
+                            {% endif %}
+                        </a>
+
+                        <a href="{% url 'friend_requests' %}" class="quick-link">
+                            <i class="fas fa-user-plus"></i> 好友请求
+                            {% if friend_request_count > 0 %}
+                                <span class="badge badge-primary">{{ friend_request_count }}</span>
+                            {% endif %}
+                        </a>
+
+                        <a href="{% url 'logout' %}" class="quick-link logout">
+                            <i class="fas fa-sign-out-alt"></i> 退出
+                        </a>
+                    </div>
+                </div>
+            </div>
         {% else %}
-            <!-- 修改：未登录状态包裹在not-logged-in类中 -->
             <div class="not-logged-in">
-                <a href="{% url 'login' %}">登录</a> | <a href="{% url 'register' %}">注册</a>
+                <div class="login-prompt">
+                    <h3><i class="fas fa-sign-in-alt"></i> 登录以体验更多功能</h3>
+                    <p>登录后你可以发布博客、参与评论、使用相亲盲盒等功能。</p>
+                    <div class="auth-buttons">
+                        <a href="{% url 'login' %}" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> 登录
+                        </a>
+                        <a href="{% url 'register' %}" class="btn btn-secondary">
+                            <i class="fas fa-user-plus"></i> 注册
+                        </a>
+                    </div>
+                </div>
             </div>
         {% endif %}
+
+        <div class="blogs-section">
+            <div class="section-header">
+                <h2>博客广场</h2>
+                <div class="blog-count">
+                    <span class="count">{{ blogs.count }}</span> 篇博客
+                </div>
+            </div>
+
+            {% if blogs %}
+                <div class="blogs-grid">
+                    {% for blog in blogs %}
+                        <div class="blog-card">
+                            <div class="blog-header">
+                                <div class="author-info">
+                                    <div class="author-avatar">
+                                        {% if blog.author.profile.avatar and blog.author.profile.avatar.url %}
+                                            <img src="{{ blog.author.profile.avatar.url }}" alt="{{ blog.author.username }}">
+                                        {% else %}
+                                            <img src="{% static 'image/default-avatar.jpg' %}" alt="默认头像">
+                                        {% endif %}
+                                    </div>
+                                    <div class="author-details">
+                                        <span class="author-name">
+                                            {% if blog.author.profile.nickname %}
+                                                {{ blog.author.profile.nickname }}
+                                            {% else %}
+                                                {{ blog.author.username }}
+                                            {% endif %}
+                                        </span>
+                                        <span class="post-time">
+                                            <i class="far fa-clock"></i> {{ blog.created_at|date:"Y-m-d H:i" }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="blog-actions">
+                                    <button class="action-btn" title="收藏" data-blog-id="{{ blog.id }}">
+                                        <i class="far fa-star"></i>
+                                        <span class="like-count">0</span>
+                                    </button>
+                                    <button class="action-btn" title="分享">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="blog-content">
+                                <h3 class="blog-title">
+                                    <a href="{% url 'blog_detail' blog.id %}">{{ blog.title }}</a>
+                                </h3>
+                                <p class="blog-excerpt">
+                                    {{ blog.content|truncatechars:300 }}
+                                </p>
+
+                                {% if blog.tags.all %}
+                                    <div class="blog-tags">
+                                        {% for tag in blog.tags.all|slice:":3" %}
+                                            <span class="tag">{{ tag.name }}</span>
+                                        {% endfor %}
+                                        {% if blog.tags.all|length > 3 %}
+                                            <span class="tag-more">+{{ blog.tags.all|length|add:"-3" }}</span>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="blog-footer">
+                                <div class="blog-stats">
+                                    <span class="stat">
+                                        <i class="far fa-eye"></i> {{ blog.views|default:0 }}
+                                    </span>
+                                    <span class="stat">
+                                        <i class="far fa-comment"></i> {{ blog.comments.count }}
+                                    </span>
+                                    <span class="stat">
+                                        <i class="far fa-heart"></i> {{ blog.likes|default:0 }}
+                                    </span>
+                                </div>
+                                <a href="{% url 'blog_detail' blog.id %}" class="read-more">
+                                    阅读全文 <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+
+                            <!-- 移除博客预览效果 -->
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="far fa-file-alt"></i>
+                    </div>
+                    <h3>暂无博客</h3>
+                    <p>这里还没有博客内容，你可以成为第一个发布者！</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'create_blog' %}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> 发布第一篇博客
+                        </a>
+                    {% else %}
+                        <p>
+                            <a href="{% url 'login' %}">登录</a> 或
+                            <a href="{% url 'register' %}">注册</a> 后发布博客
+                        </p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
 
         {% if user.is_staff %}
-            <!-- 修改：管理员链接添加admin-link类 -->
-            <a href="{% url 'users_table' %}" class="admin-link">点击查看用户</a>
+            <div class="admin-section">
+                <a href="{% url 'users_table' %}" class="admin-link">
+                    <i class="fas fa-users-cog"></i> 用户管理面板
+                </a>
+            </div>
         {% endif %}
-    </div> <!-- 关闭container容器 -->
+    </div>
+
+    <script>
+        // 关闭消息提示
+        document.querySelectorAll('.close-message').forEach(button => {
+            button.addEventListener('click', function() {
+                this.parentElement.style.display = 'none';
+            });
+        });
+
+        // 筛选标签切换
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const filter = this.dataset.filter;
+                const url = new URL(window.location.href);
+
+                if (filter === 'latest') {
+                    url.searchParams.delete('filter');
+                } else {
+                    url.searchParams.set('filter', filter);
+                }
+
+                // 提交搜索表单或直接跳转
+                const searchForm = document.querySelector('.search-form');
+                if (searchForm) {
+                    const filterInput = document.createElement('input');
+                    filterInput.type = 'hidden';
+                    filterInput.name = 'filter';
+                    filterInput.value = filter === 'latest' ? '' : filter;
+                    searchForm.appendChild(filterInput);
+                    searchForm.submit();
+                } else {
+                    window.location.href = url.toString();
+                }
+            });
+        });
+
+        // 博客卡片悬停效果 - 简化版
+        document.querySelectorAll('.blog-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.3)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 4px 12px var(--gh-shadow)';
+            });
+        });
+
+        // 搜索表单处理
+        const searchForm = document.querySelector('.search-form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                const searchInput = this.querySelector('.search-input');
+                if (searchInput.value.trim() === '') {
+                    searchInput.name = ''; // 清空搜索参数
+                }
+            });
+        }
+
+        // 模拟收藏功能
+        document.querySelectorAll('.action-btn[title="收藏"]').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const blogId = this.dataset.blogId;
+                const likeCount = this.querySelector('.like-count');
+                const icon = this.querySelector('i');
+
+                // 切换收藏状态
+                if (icon.classList.contains('far')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    icon.style.color = '#ffd700';
+                    likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                    likeCount.style.opacity = '1';
+
+                    // 显示提示
+                    showToast('已收藏这篇博客', 'success');
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    icon.style.color = '';
+                    likeCount.textContent = parseInt(likeCount.textContent) - 1;
+
+                    if (parseInt(likeCount.textContent) === 0) {
+                        likeCount.style.opacity = '0.5';
+                    }
+
+                    // 显示提示
+                    showToast('已取消收藏', 'info');
+                }
+            });
+        });
+
+        // 显示提示信息
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+<!-- 主题切换按钮 -->
+<div class="theme-toggle">
+    <button class="theme-toggle-btn" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+</div>
+
+<script>
+    // 主题切换功能
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = themeToggle.querySelector('i');
+
+    // 检查本地存储的主题设置
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+    }
+
+    themeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+
+        if (document.body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        } else {
+            localStorage.setItem('theme', 'light');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+
+        // 可选：发送AJAX请求保存主题偏好到服务器
+        fetch('/toggle-theme/', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        }).catch(error => console.error('Error saving theme:', error));
+    });
+
+    // 获取CSRF令牌的函数
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // 头像点击跳转到用户详情页
+    document.querySelectorAll('.user-avatar, .author-avatar img').forEach(avatar => {
+        avatar.style.cursor = 'pointer';
+        avatar.addEventListener('click', function() {
+            const userId = this.dataset.userId;
+            if (userId) {
+                window.location.href = `/profile/${userId}/`;
+            }
+        });
+    });
+</script>
 </body>
 </html>

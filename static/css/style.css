@@ -8,7 +8,7 @@
 
 body {
     background-color: #f5f5f5;
-    background-image: url(static/image/Sylphiette.png);
+    background-image: url(../image/Sylphiette.png);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -328,4 +328,75 @@ body {
         flex-direction: column;
         text-align: center;
     }
+}
+/* 在 style.css 中添加以下样式（如果还没有） */
+
+/* 通用头像样式 */
+.avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e1e4e8;
+}
+
+.avatar-sm {
+    width: 24px;
+    height: 24px;
+}
+
+.avatar-md {
+    width: 36px;
+    height: 36px;
+}
+
+.avatar-lg {
+    width: 50px;
+    height: 50px;
+}
+
+/* 默认头像 */
+.default-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.default-avatar-sm {
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+}
+
+.default-avatar-md {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+}
+
+.default-avatar-lg {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+}
+
+/* 头像颜色 */
+.avatar-color-1 { background-color: #0366d6; }
+.avatar-color-2 { background-color: #6f42c1; }
+.avatar-color-3 { background-color: #2ea44f; }
+.avatar-color-4 { background-color: #e36209; }
+.avatar-color-5 { background-color: #d03592; }
+
+/* 用户信息显示 */
+.user-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #24292e;
 }

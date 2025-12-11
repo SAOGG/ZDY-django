@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile_user.username }} - 用户详情</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, #161b22, #0d1117);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            margin-bottom: 1rem;
+            object-fit: cover;
+        }
+
+        .profile-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .profile-stat {
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .profile-stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--gh-accent);
+            display: block;
+        }
+
+        .profile-stat-label {
+            color: var(--gh-text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .profile-details {
+            background-color: var(--gh-bg-secondary);
+            border: 1px solid var(--gh-border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gh-border);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--gh-text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            color: var(--gh-text-primary);
+            font-size: 1rem;
+        }
+
+        .user-blogs-section {
+            background-color: var(--gh-bg-secondary);
+            border: 1px solid var(--gh-border);
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .empty-blogs {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gh-text-secondary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--gh-accent);
+            color: white;
+            border: 1px solid var(--gh-accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--gh-accent-hover);
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background-color: var(--gh-bg-tertiary);
+            color: var(--gh-text-primary);
+            border: 1px solid var(--gh-border);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--gh-bg-secondary);
+            text-decoration: none;
+        }
+
+        .btn-success {
+            background-color: var(--gh-success);
+            color: white;
+            border: 1px solid var(--gh-success);
+        }
+
+        .btn-success:hover {
+            background-color: #2c974b;
+            text-decoration: none;
+        }
+
+        .btn-danger {
+            background-color: var(--gh-danger);
+            color: white;
+            border: 1px solid var(--gh-danger);
+        }
+
+        .btn-danger:hover {
+            background-color: #e03939;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部消息提示 -->
+        {% if messages %}
+            <div class="messages">
+                {% for m in messages %}
+                    <div class="message {% if m.tags %}{{ m.tags }}{% endif %}">
+                        <i class="fas fa-info-circle"></i>
+                        <p>{{ m }}</p>
+                        <span class="close-message">&times;</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- 用户头部信息 -->
+        <div class="profile-header">
+            <div class="profile-actions">
+                <a href="{% url 'home' %}" class="action-btn btn-secondary" style="color: white;">
+                    <i class="fas fa-home"></i> 返回主页
+                </a>
+            </div>
+
+            <!-- 用户头像 -->
+            {% if profile.avatar and profile.avatar.url %}
+                <img src="{{ profile.avatar.url }}" alt="{{ profile_user.username }}" class="profile-avatar-large">
+            {% else %}
+                <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #0366d6, #0550ae);
+                            margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;
+                            color: white; font-size: 3rem; font-weight: bold; border: 4px solid white;">
+                    {{ profile_user.username|slice:":1"|upper }}
+                </div>
+            {% endif %}
+
+            <h1 style="margin-bottom: 0.5rem;">
+                {% if profile.nickname %}
+                    {{ profile.nickname }}
+                {% else %}
+                    {{ profile_user.username }}
+                {% endif %}
+                {% if is_friend %}
+                    <span style="font-size: 0.8rem; background: var(--gh-success); color: white; padding: 2px 8px; border-radius: 12px; margin-left: 10px;">好友</span>
+                {% endif %}
+            </h1>
+
+            <p style="color: #8b949e; margin-bottom: 1rem;">
+                <i class="fas fa-envelope"></i> {{ profile_user.email }}
+            </p>
+
+            <!-- 如果不是自己的资料页，显示操作按钮 -->
+            {% if not is_own_profile and user.is_authenticated %}
+            <div class="action-buttons" style="justify-content: center;">
+                {% if is_friend %}
+                    <a href="{% url 'message_detail' profile_user.id %}" class="action-btn btn-primary">
+                        <i class="fas fa-envelope"></i> 发送私信
+                    </a>
+                {% else %}
+                    {% if friend_request_sent %}
+                        <button class="action-btn btn-secondary" disabled>
+                            <i class="fas fa-user-clock"></i> 已发送请求
+                        </button>
+                    {% else %}
+                        <a href="{% url 'add_friend' profile_user.id %}" class="action-btn btn-success">
+                            <i class="fas fa-user-plus"></i> 添加好友
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'message_detail' profile_user.id %}" class="action-btn btn-primary">
+                        <i class="fas fa-envelope"></i> 发送私信
+                    </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- 用户统计数据 -->
+        <div class="profile-stats">
+            <div class="profile-stat">
+                <span class="profile-stat-number">{{ blog_count }}</span>
+                <span class="profile-stat-label">博客数</span>
+            </div>
+            <div class="profile-stat">
+                <span class="profile-stat-number">{{ comment_count }}</span>
+                <span class="profile-stat-label">评论数</span>
+            </div>
+            <div class="profile-stat">
+                <span class="profile-stat-number">{{ profile_user.date_joined|date:"Y-m-d" }}</span>
+                <span class="profile-stat-label">加入时间</span>
+            </div>
+        </div>
+
+        <!-- 用户详细信息 -->
+        <div class="profile-details">
+            <h2 style="margin-bottom: 1.5rem; color: var(--gh-text-primary);">
+                <i class="fas fa-info-circle"></i> 详细信息
+            </h2>
+
+            <div class="detail-item">
+                <div class="detail-label">用户名</div>
+                <div class="detail-value">{{ profile_user.username }}</div>
+            </div>
+
+            {% if profile.nickname %}
+            <div class="detail-item">
+                <div class="detail-label">昵称</div>
+                <div class="detail-value">{{ profile.nickname }}</div>
+            </div>
+            {% endif %}
+
+            {% if profile.age %}
+            <div class="detail-item">
+                <div class="detail-label">年龄</div>
+                <div class="detail-value">{{ profile.age }} 岁</div>
+            </div>
+            {% endif %}
+
+            {% if profile.gender %}
+            <div class="detail-item">
+                <div class="detail-label">性别</div>
+                <div class="detail-value">
+                    {% if profile.gender == 'male' %}男
+                    {% elif profile.gender == 'female' %}女
+                    {% else %}其他
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if profile.height %}
+            <div class="detail-item">
+                <div class="detail-label">身高</div>
+                <div class="detail-value">{{ profile.height }} cm</div>
+            </div>
+            {% endif %}
+
+            {% if profile.weight %}
+            <div class="detail-item">
+                <div class="detail-label">体重</div>
+                <div class="detail-value">{{ profile.weight }} kg</div>
+            </div>
+            {% endif %}
+
+            {% if profile.hobbies %}
+            <div class="detail-item">
+                <div class="detail-label">爱好</div>
+                <div class="detail-value">{{ profile.hobbies }}</div>
+            </div>
+            {% endif %}
+
+            {% if not profile.nickname and not profile.age and not profile.gender and not profile.height and not profile.weight and not profile.hobbies %}
+            <div class="empty-blogs">
+                <i class="fas fa-user-slash" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                <p>该用户还没有完善个人信息</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- 用户博客 -->
+        <div class="user-blogs-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; color: var(--gh-text-primary);">
+                    <i class="fas fa-blog"></i> 最新博客
+                </h2>
+                {% if user_blogs %}
+                <a href="{% url 'search_user_blogs' profile_user.id %}" class="action-btn btn-secondary">
+                    <i class="fas fa-search"></i> 查看全部博客
+                </a>
+                {% endif %}
+            </div>
+
+            {% if user_blogs %}
+                <div class="blogs-grid">
+                    {% for blog in user_blogs %}
+                        <div class="blog-card">
+                            <div class="blog-header">
+                                <div class="author-info">
+                                    <div class="author-avatar">
+                                        {% if profile_user.profile.avatar and profile_user.profile.avatar.url %}
+                                            <img src="{{ profile_user.profile.avatar.url }}" alt="{{ profile_user.username }}">
+                                        {% else %}
+                                            <img src="{% static 'image/default-avatar.jpg' %}" alt="默认头像">
+                                        {% endif %}
+                                    </div>
+                                    <div class="author-details">
+                                        <span class="author-name">
+                                            {% if profile.nickname %}
+                                                {{ profile.nickname }}
+                                            {% else %}
+                                                {{ profile_user.username }}
+                                            {% endif %}
+                                        </span>
+                                        <span class="post-time">
+                                            <i class="far fa-clock"></i> {{ blog.created_at|date:"Y-m-d H:i" }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="blog-content">
+                                <h3 class="blog-title">
+                                    <a href="{% url 'blog_detail' blog.id %}">{{ blog.title }}</a>
+                                </h3>
+                                <p class="blog-excerpt">
+                                    {{ blog.content|truncatechars:200 }}
+                                </p>
+                            </div>
+
+                            <div class="blog-footer">
+                                <div class="blog-stats">
+                                    <span class="stat">
+                                        <i class="far fa-eye"></i> {{ blog.views|default:0 }}
+                                    </span>
+                                    <span class="stat">
+                                        <i class="far fa-comment"></i> {{ blog.comments.count }}
+                                    </span>
+                                </div>
+                                <a href="{% url 'blog_detail' blog.id %}" class="read-more">
+                                    阅读全文 <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-blogs">
+                    <i class="far fa-file-alt" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <p>该用户还没有发布过博客</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // 关闭消息提示
+        document.querySelectorAll('.close-message').forEach(button => {
+            button.addEventListener('click', function() {
+                this.parentElement.style.display = 'none';
+            });
+        });
+
+        // 添加好友确认
+        document.querySelectorAll('a[href*="add_friend"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (!this.classList.contains('disabled')) {
+                    if (!confirm('确定要发送好友请求吗？')) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

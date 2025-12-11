@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>确认删除</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <style>
+        .delete-confirmation {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 2rem;
+            background-color: var(--gh-bg-secondary);
+            border: 1px solid var(--gh-border);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .delete-icon {
+            font-size: 3rem;
+            color: var(--gh-danger);
+            margin-bottom: 1rem;
+        }
+
+        .delete-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-cancel {
+            background-color: var(--gh-bg-tertiary);
+            color: var(--gh-text-primary);
+            border: 1px solid var(--gh-border);
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+            background-color: var(--gh-bg-secondary);
+            text-decoration: none;
+        }
+
+        .btn-delete {
+            background-color: var(--gh-danger);
+            color: white;
+            border: 1px solid var(--gh-danger);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete:hover {
+            background-color: #e03939;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="delete-confirmation">
+            <div class="delete-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+
+            <h2 style="color: var(--gh-text-primary); margin-bottom: 1rem;">确认删除</h2>
+
+            <p style="color: var(--gh-text-secondary); line-height: 1.6;">
+                您确定要删除
+                <strong style="color: var(--gh-accent);">{{ object.title }}</strong>
+                吗？此操作不可撤销，所有相关的评论和内容都将被永久删除。
+            </p>
+
+            <div class="delete-actions">
+                {% if type == '博客' %}
+                    <a href="{% url 'my_blogs' %}" class="btn-cancel">
+                        <i class="fas fa-times"></i> 取消
+                    </a>
+                {% else %}
+                    <a href="{% url 'home' %}" class="btn-cancel">
+                        <i class="fas fa-times"></i> 取消
+                    </a>
+                {% endif %}
+
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete">
+                        <i class="fas fa-trash"></i> 确认删除
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

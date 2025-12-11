@@ -1,45 +1,7 @@
+# models.py
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
-
-
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    nickname = models.CharField(max_length=100, blank=True)
-
-    def __str__(self):
-        return f"{self.user.username}的资料"
-
-
-class Blog(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blogs')
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return self.title
-
-
-class Comment(models.Model):
-    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='comments')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
-    content = models.TextField()
-    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['created_at']
-
-    def __str__(self):
-        return f"{self.author.username}的评论"
-
 
 
 class Profile(models.Model):
@@ -60,6 +22,43 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username}的资料"
+
+    def get_gender_text(self):
+        return dict(self.GENDER_CHOICES).get(self.gender, "未填写")
+
+
+class Blog(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blogs')
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    # 添加图片字段
+    image = models.ImageField(upload_to='blog_images/', blank=True, null=True, verbose_name="博客图片")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    views = models.PositiveIntegerField(default=0)
+
+    # 如果需要 likes 字段也添加
+    likes = models.PositiveIntegerField(default=0)
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+
+class Comment(models.Model):
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    content = models.TextField()
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"{self.author.username}的评论"
 
 
 class Friend(models.Model):

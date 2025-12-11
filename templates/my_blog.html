@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的博客管理</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <style>
+        .dashboard-header {
+            background: linear-gradient(135deg, #161b22, #0d1117);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--gh-bg-secondary);
+            border: 1px solid var(--gh-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gh-accent);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--gh-accent);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--gh-text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .blog-management-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .blog-list-management {
+            background-color: var(--gh-bg-secondary);
+            border: 1px solid var(--gh-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gh-text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .blog-item-management {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--gh-border);
+            transition: background-color 0.2s ease;
+        }
+
+        .blog-item-management:last-child {
+            border-bottom: none;
+        }
+
+        .blog-item-management:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .blog-info {
+            flex: 1;
+        }
+
+        .blog-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .edit-btn {
+            background-color: var(--gh-accent);
+            color: white;
+            border: 1px solid var(--gh-accent);
+        }
+
+        .edit-btn:hover {
+            background-color: var(--gh-accent-hover);
+            text-decoration: none;
+        }
+
+        .delete-btn {
+            background-color: var(--gh-danger);
+            color: white;
+            border: 1px solid var(--gh-danger);
+        }
+
+        .delete-btn:hover {
+            background-color: #e03939;
+            text-decoration: none;
+        }
+
+        .view-btn {
+            background-color: transparent;
+            color: var(--gh-text-primary);
+            border: 1px solid var(--gh-border);
+        }
+
+        .view-btn:hover {
+            background-color: var(--gh-bg-tertiary);
+            text-decoration: none;
+        }
+
+        .blog-stats-small {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--gh-text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部消息提示 -->
+        {% if messages %}
+            <div class="messages">
+                {% for m in messages %}
+                    <div class="message {% if m.tags %}{{ m.tags }}{% endif %}">
+                        <i class="fas fa-info-circle"></i>
+                        <p>{{ m }}</p>
+                        <span class="close-message">&times;</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- 仪表板头部 -->
+        <div class="dashboard-header">
+            <h1><i class="fas fa-user-cog"></i> 我的博客管理</h1>
+            <p class="user-email" style="color: var(--gh-text-secondary); margin-top: 0.5rem;">
+                <i class="fas fa-user"></i> {{ user.username }} • <i class="fas fa-envelope"></i> {{ user.email }}
+            </p>
+        </div>
+
+        <!-- 统计数据 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">{{ total_blogs }}</span>
+                <span class="stat-label">总博客数</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ total_comments }}</span>
+                <span class="stat-label">总评论数</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ total_views }}</span>
+                <span class="stat-label">总浏览量</span>
+            </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="blog-management-actions">
+            <a href="{% url 'create_blog' %}" class="action-btn edit-btn">
+                <i class="fas fa-plus"></i> 创建新博客
+            </a>
+            <a href="{% url 'home' %}" class="action-btn view-btn">
+                <i class="fas fa-home"></i> 返回主页
+            </a>
+        </div>
+
+        <!-- 博客列表 -->
+        <div class="blog-list-management">
+            <h2 style="margin-bottom: 1.5rem; color: var(--gh-text-primary);">
+                <i class="fas fa-list"></i> 我的博客列表
+            </h2>
+
+            {% if blogs %}
+                {% for blog in blogs %}
+                    <div class="blog-item-management">
+                        <div class="blog-info">
+                            <h3 style="margin-bottom: 0.5rem;">
+                                <a href="{% url 'blog_detail' blog.id %}" style="color: var(--gh-accent); text-decoration: none;">
+                                    {{ blog.title }}
+                                </a>
+                            </h3>
+                            <div class="blog-stats-small">
+                                <span><i class="far fa-calendar"></i> {{ blog.created_at|date:"Y-m-d" }}</span>
+                                <span><i class="far fa-eye"></i> {{ blog.views|default:0 }} 浏览</span>
+                                <span><i class="far fa-comment"></i> {{ blog.comments.count }} 评论</span>
+                            </div>
+                        </div>
+
+                        <div class="blog-actions">
+                            <a href="{% url 'blog_detail' blog.id %}" class="action-btn view-btn">
+                                <i class="fas fa-eye"></i> 查看
+                            </a>
+                            <a href="{% url 'edit_blog' blog.id %}" class="action-btn edit-btn">
+                                <i class="fas fa-edit"></i> 编辑
+                            </a>
+                            <a href="{% url 'delete_blog' blog.id %}" class="action-btn delete-btn">
+                                <i class="fas fa-trash"></i> 删除
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="far fa-file-alt"></i>
+                    <h3>暂无博客</h3>
+                    <p>您还没有发布过任何博客，赶快创建第一篇吧！</p>
+                    <a href="{% url 'create_blog' %}" class="action-btn edit-btn" style="margin-top: 1rem;">
+                        <i class="fas fa-plus"></i> 创建第一篇博客
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- 分页控件（如果需要的话） -->
+        {% if blogs.has_other_pages %}
+        <div class="pagination" style="margin-top: 2rem;">
+            {% if blogs.has_previous %}
+                <a href="?page={{ blogs.previous_page_number }}" class="pagination-btn">
+                    <i class="fas fa-chevron-left"></i> 上一页
+                </a>
+            {% endif %}
+
+            <span class="pagination-info">
+                第 {{ blogs.number }} 页 / 共 {{ blogs.paginator.num_pages }} 页
+            </span>
+
+            {% if blogs.has_next %}
+                <a href="?page={{ blogs.next_page_number }}" class="pagination-btn">
+                    下一页 <i class="fas fa-chevron-right"></i>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // 关闭消息提示
+        document.querySelectorAll('.close-message').forEach(button => {
+            button.addEventListener('click', function() {
+                this.parentElement.style.display = 'none';
+            });
+        });
+
+        // 删除确认
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (!confirm('确定要删除这篇博客吗？此操作不可撤销。')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
